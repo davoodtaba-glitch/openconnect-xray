@@ -1,0 +1,27 @@
+# temporary files
+*.sw[op]
+*~
+
+# project files
+/*.pro.user
+/CMakeLists.txt.user
+
+# temporary build folders
+build-release*/
+build*/
+
+
+# temporary...
+_xxx/
+*.zip
+*.exe
+*.exe.sha512
+
+# local build outputs and packages
+/dist/
+
+# build inputs needed for a reproducible Windows build
+!external/openconnect-devel-v8.10_mingw64.zip
+!external/openconnect-v8.10_mingw64.zip
+!third_party/xray/xray.exe
+!third_party/tap-windows/tap9.27/dist.win10/amd64/devcon.exe

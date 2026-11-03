@@ -1,0 +1,210 @@
+stages:
+ - preliminaries  # signoff / static analysis
+ - testing
+
+variables:
+  BUILD_IMAGES_PROJECT: openconnect/build-images
+  FEDORA_BUILD: openconnect-cli-fedora40
+  MINGW32_BUILD: openconnect-cli-mingw32
+  MINGW64_BUILD: openconnect-cli-mingw64
+  MACOS14_BUILD: macos-14-xcode-15
+
+Signoff:
+  stage: preliminaries
+  except:
+  - tags
+  - schedules
+  script:
+  # Quoted to work around https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20177
+  - 'echo "Checking for new commits without Signed-off-by: tags as described in https://www.infradead.org/openconnect/contribute.html"'
+  # Last bad commit
+  - 'git log 7abb6359ce8be9952f768b643f96094e057f8a07.. --grep "(^Signed-off-by)|(^Merge branch)|(^This reverts commit)" --extended-regexp --invert-grep --exit-code'
+  - echo "None (good)"
+
+# This tests intentionally an out-of-tree build
+Fedora:
+  variables:
+    BUILD_TYPE: "Debug"
+  stage: testing
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
+  script:
+  - dnf -y install dnf-plugins-core qt6-qtscxml-devel qt6-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
+  - mkdir -p build && cd build
+  - cmake -S .. -B . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - cmake --build . --config $BUILD_TYPE
+  tags:
+  - saas-linux-small-amd64
+  except:
+  - tags
+  - schedules
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/
+
+static-analyzer/Fedora:
+  variables:
+    BUILD_TYPE: "Debug"
+  stage: preliminaries
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$FEDORA_BUILD
+  script:
+  - dnf -y install dnf-plugins-core qt6-qtscxml-devel qt6-qtbase-devel patch cmake spdlog-devel clang-tools-extra openconnect-devel
+  - scan-build cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - scan-build --status-bugs -o scan-build-src cmake --build . --config $BUILD_TYPE
+  tags:
+  - saas-linux-small-amd64
+  except:
+  - tags
+  - schedules
+  artifacts:
+    expire_in: 1 week
+    when: on_failure
+    paths:
+      - scan-build-src/*
+
+MinGW32:
+  variables:
+    BUILD_TYPE: "Debug"
+  stage: testing
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$MINGW32_BUILD
+  script:
+  - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
+  - echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
+  - dnf -y install dnf-plugins-core mingw32-qt6-qtbase patch mingw32-qt6-qtscxml
+  - mingw32-cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - cmake --build . --config $BUILD_TYPE
+  tags:
+  - saas-linux-small-amd64
+  except:
+  - tags
+  - schedules
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - bin/openconnect-gui.exe
+
+MinGW64:
+  variables:
+    BUILD_TYPE: "Debug"
+  stage: testing
+  image: $CI_REGISTRY/$BUILD_IMAGES_PROJECT:$MINGW64_BUILD
+  script:
+  - dnf remove -y wine.i686
+  - mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc
+  - echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
+  - dnf -y install dnf-plugins-core mingw64-qt6-qtbase patch mingw64-qt6-qtscxml
+  - mingw64-cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - cmake --build . --config $BUILD_TYPE
+  tags:
+  - saas-linux-small-amd64
+  except:
+  - tags
+  - schedules
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - bin/openconnect-gui.exe
+
+.WindowsTemplate:
+  tags:
+  - saas-windows-medium-amd64
+  hooks:
+    pre_get_sources_script:
+      - git config --system core.autocrlf false
+  script:
+    - Push-Location \
+    - Import-Module ${env:ChocolateyInstall}\helpers\chocolateyProfile.psm1
+    - choco install msys2 -y --no-progress
+    - $Env:TARGET = "package"
+    - $Env:GENERATOR = '"MinGW Makefiles"'
+    - refreshenv
+    - Pop-Location
+    - $Env:BUILD_DIR = "build"
+    - cmd.exe /c c:\tools\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where . -c "./contrib/build_deps_mingw@msys2.sh ${Env:BUILD_ARGS}"
+    - cmd.exe /c c:\tools\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -use-full-path -where . -c "./contrib/build_mingw@msys2.sh ${Env:BUILD_ARGS}"
+
+# Build against stable openconnect
+WindowsNative-stable:
+  stage: testing
+  extends: .WindowsTemplate
+  variables:
+    BUILD_TYPE: "Debug"
+    BUILD_ARGS:
+  except:
+  - schedules
+  - tags
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/CMakeCache.txt
+      - build/CPack*
+      - build/openconnect-gui*.exe
+      - build/openconnect-gui*.exe.sha512
+
+# Build against latest development openconnect
+WindowsNative-latest:
+  stage: testing
+  extends: .WindowsTemplate
+  allow_failure: true
+  variables:
+    BUILD_TYPE: "Debug"
+    BUILD_ARGS: "--head"
+  except:
+  - schedules
+  - tags
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/CMakeCache.txt
+      - build/CPack*
+      - build/openconnect-gui*.exe
+      - build/openconnect-gui*.exe.sha512
+
+WindowsRelease:
+  stage: testing
+  extends: .WindowsTemplate
+  variables:
+    BUILD_TYPE: "Release"
+    SIGN_EXE: "true"
+  only:
+  - tags
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/CMakeCache.txt
+      - build/CPack*
+      - build/openconnect-gui*.exe
+      - build/openconnect-gui*.exe.sha512
+
+# https://docs.gitlab.com/ee/ci/runners/saas/macos/environment.html
+MacOS14:
+  stage: testing
+  when: manual
+  image: $MACOS14_BUILD
+  tags: [ saas-macos-medium-m1 ]
+  variables:
+    HOMEBREW_NO_AUTO_UPDATE: 1
+    HOMEBREW_NO_INSTALL_UPGRADE: 1
+    HOMEBREW_NO_INSTALL_CLEANUP: 1
+    HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+    BUILD_TYPE: "Debug"
+  before_script:
+  - brew --env
+  - brew config
+  - brew install cmake pkg-config qt@6 openconnect
+  script:
+  - mkdir -p build
+  - cd build
+  - cmake .. -DQt6_DIR=$(brew --prefix qt6)/lib/cmake/Qt6 -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
+  - cmake --build . --config "$BUILD_TYPE"
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - build/bin/

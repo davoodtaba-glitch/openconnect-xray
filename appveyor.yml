@@ -1,0 +1,43 @@
+version: '{branch}-{build}'
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  except:
+  - gh-pages
+image: Visual Studio 2022
+clone_depth: 200
+environment:
+  QT6: C:\Qt\6.5.3\mingw_64
+  MINGW: C:\msys64\mingw64
+  NSIS: C:\Program Files (x86)\NSIS
+  matrix:
+  - GENERATOR: '"MinGW Makefiles"'
+    BUILD_DIR: build
+    BUILD_TYPE: Debug
+    TARGET: package
+#    TARGET: all
+#  - GENERATOR: '"MinGW Makefiles"'
+#    BUILD_TYPE: Release
+#    TARGET: package
+cache: .\build -> appveyor.yml
+build_script:
+- cmd: >-
+    set
+
+    set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+
+    set PATH=%MINGW%\bin;%QT6%\bin;%PATH%
+
+    set PATH="%NSIS%";%PATH%
+
+    c:\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where . -c "./contrib/build_deps_mingw@msys2.sh"
+
+    c:\msys64\msys2_shell.cmd -defterm -no-start -mingw64 -where . -c "./contrib/build_mingw@msys2.sh"
+
+test: off
+artifacts:
+- path: build/openconnect-gui*.exe
+  name: 'Installer'
+- path: build/openconnect-gui*.exe.sha512
+  name: 'Installer - sha512 hash'
+

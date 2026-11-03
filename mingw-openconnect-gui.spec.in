@@ -1,0 +1,163 @@
+%?mingw_package_header
+
+%global gitsnapshot @ISSNAP@
+%if 0%{?gitsnapshot}
+%global snapcommit @SNAPCOMMIT@
+%global snapcount @SNAPCOUNT@
+%global shortcommit %(c=%{snapcommit}; echo ${c:0:7})
+%global snapver .git.%{snapcount}.%{shortcommit}
+%endif
+
+%global tagver @VERSION@
+
+Name:		mingw-openconnect-gui
+Version:	%{tagver}%{?snapver}
+Release:	0%{?dist}
+Summary:	OpenConnect VPN graphical client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
+
+License:	LGPLv2
+URL:		https://gitlab.com/openconnect/openconnect-gui/
+%if 0%{?gitsnapshot}
+Source0:        https://gitlab.com/api/v4/projects/12274423/repository/archive.tar.gz?sha=%{snapcommit}
+%else
+Source0:        ftp://ftp.infradead.org/pub/%{name}/openconnect-gui-%{version}.tar.gz
+%endif
+Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
+Source3:	macros.gpg
+
+
+BuildRequires:  cmake git
+
+BuildRequires:  mingw32-filesystem >= 95
+BuildRequires:  mingw32-gcc
+BuildRequires:  mingw32-gcc-c++
+BuildRequires:  mingw32-gettext
+BuildRequires:  mingw32-gnutls
+BuildRequires:  mingw32-p11-kit
+BuildRequires:  mingw32-libxml2
+BuildRequires:  mingw32-libxml2
+BuildRequires:  mingw32-openconnect
+BuildRequires:  mingw32-spdlog
+BuildRequires:  mingw32-qt5-qtbase
+BuildRequires:  wine-core(x86-32)
+
+BuildRequires:  mingw64-filesystem >= 95
+BuildRequires:  mingw64-gcc
+BuildRequires:  mingw64-gcc-c++
+BuildRequires:  mingw64-gettext
+BuildRequires:  mingw64-gnutls
+BuildRequires:  mingw64-p11-kit
+BuildRequires:  mingw64-libxml2
+BuildRequires:  mingw64-openconnect
+BuildRequires:  mingw64-spdlog
+BuildRequires:  mingw64-qt5-qtbase
+
+BuildRequires:  wine-core(x86-64)
+
+BuildRequires:  mingw32-nsis
+
+BuildRequires:  pkgconfig automake autoconf libtool
+BuildRequires:  gettext-devel
+
+%description
+The Qt-based OpenConnect-GUI, cross-compiled for MinGW.
+
+%?mingw_debug_package
+
+# Win32
+%package -n mingw32-openconnect-gui
+Summary:        OpenConnect VPN client GUI
+
+%description -n mingw32-openconnect-gui
+The OpenConnect multiprotocol VPN client GUI, cross-compiled for MinGW.
+
+%package -n mingw32-openconnect-gui-installer
+Summary:        OpenConnect VPN client GUI installer
+
+%description -n mingw32-openconnect-gui-installer
+The OpenConnect multiprotocol VPN client GUI installer for 32-bit Windows.
+
+# Win64
+%package -n mingw64-openconnect-gui
+Summary:        OpenConnect VPN client GUI
+Requires:       pkgconfig
+
+%description -n mingw64-openconnect-gui
+The OpenConnect multiprotocol VPN client GUI, cross-compiled for MinGW.
+
+%package -n mingw64-openconnect-gui-installer
+Summary:        OpenConnect VPN client GUI installer
+
+%description -n mingw64-openconnect-gui-installer
+The OpenConnect multiprotocol VPN client GUI for 64-bit Windows.
+
+%include %SOURCE3
+
+%prep
+%if 0%{?gitsnapshot}
+%setup -q -n openconnect-gui-%{shortcommit}
+%else
+%gpg_verify
+%setup -q -n openconnect-gui-%{version}
+%endif
+
+%mingw_cmake .
+
+# The dependencies for this are utterly hosed, and because it's using
+# the "pointless new build system du jour" of five years ago, I have
+# no idea how to fix them. Simply using add_dependencies() to try to
+# make openconnect-gui depend on qt-solutions::qtsingleapplication
+# doesn't appear to suffice. So just manually build it first.
+make %{?_smp_mflags} V=1 -C build_win32 qt-solutions-master
+make %{?_smp_mflags} V=1 -C build_win64 qt-solutions-master
+%mingw_make %{?_smp_mflags} V=1
+
+%install
+# The project's "make install" is fairly hosed too, so just install
+# openconnect-gui.exe manually.
+mkdir -p $RPM_BUILD_ROOT/%{mingw32_bindir}
+install -m0755 build_win32/bin/openconnect-gui.exe $RPM_BUILD_ROOT/%{mingw32_bindir}/openconnect-gui.exe
+mkdir -p $RPM_BUILD_ROOT/%{mingw64_bindir}
+install -m0755 build_win64/bin/openconnect-gui.exe $RPM_BUILD_ROOT/%{mingw64_bindir}/openconnect-gui.exe
+
+
+#mingw_make install DESTDIR=$RPM_BUILD_ROOT
+
+#install -m 0644 build_win32/openconnect-gui-installer.exe $RPM_BUILD_ROOT/%{mingw32_bindir}/openconnect-gui-installer-%{version}-%{release}.exe
+#install -m 0644 build_win64/openconnect-gui-installer.exe $RPM_BUILD_ROOT/%{mingw64_bindir}/openconnect-gui-installer-%{version}-%{release}.exe
+
+#rm -f $RPM_BUILD_ROOT/%{mingw32_libdir}/libopenconnect-gui.la
+#rm -rf $RPM_BUILD_ROOT/%{mingw32_libexecdir}/openconnect-gui
+#rm -rf $RPM_BUILD_ROOT/%{mingw32_mandir}/man8/openconnect-gui.8*
+#rm -rf $RPM_BUILD_ROOT/%{mingw32_docdir}/openconnect-gui
+#rm -rf $RPM_BUILD_ROOT/%{mingw32_datadir}/bash-completion
+
+#rm -f $RPM_BUILD_ROOT/%{mingw64_libdir}/libopenconnect-gui.la
+#rm -rf $RPM_BUILD_ROOT/%{mingw64_libexecdir}/openconnect-gui
+#rm -rf $RPM_BUILD_ROOT/%{mingw64_mandir}/man8/openconnect-gui.8*
+#rm -rf $RPM_BUILD_ROOT/%{mingw64_docdir}/openconnect-gui
+#rm -rf $RPM_BUILD_ROOT/%{mingw64_datadir}/bash-completion
+
+#%mingw_find_lang openconnect-gui
+# Surely this is supposed to happen automatically... but it doesn't seem to.
+%mingw_debug_install_post
+
+#Win32
+%files -n mingw32-openconnect-gui
+%license LICENSE.txt
+%{mingw32_bindir}/openconnect-gui.exe
+
+#%files -n mingw32-openconnect-gui-installer
+#{mingw32_bindir}/openconnect-gui-installer-*.exe
+
+#Win64
+%files -n mingw64-openconnect-gui
+%license LICENSE.txt
+%{mingw64_bindir}/openconnect-gui.exe
+
+#%files -n mingw64-openconnect-gui-installer
+#{mingw64_bindir}/openconnect-gui-installer-*.exe
+
+%changelog
+* Sun May 16 2021 David Woodhouse <dwmw2@infradead.org> - %{version}-%{release}
+- Autopackaging for COPR

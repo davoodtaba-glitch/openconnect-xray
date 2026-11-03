@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>560</width>
+    <height>380</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>320</width>
+    <height>220</height>
+   </size>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../openconnect-gui.qrc">
+    <normaloff>:/Resources/mono_lock.png</normaloff>:/Resources/mono_lock.png</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="documentMode">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+      <property name="movable">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="tabWidget_main">
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <attribute name="title">
+        <string>Main</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,3">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="iconLabel">
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>80</height>
+               </size>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_Profiles" stretch="0,4,0">
+              <item>
+               <widget class="QLabel" name="serverLabel">
+                <property name="text">
+                 <string>Server:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="serverList">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="serverListControl">
+                <property name="whatsThis">
+                 <string>Edit</string>
+                </property>
+                <property name="text">
+                 <string>Edit</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../openconnect-gui.qrc">
+                  <normaloff>:/images/profiles.png</normaloff>:/images/profiles.png</iconset>
+                </property>
+                <property name="popupMode">
+                 <enum>QToolButton::InstantPopup</enum>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_Buttons" stretch="4,0">
+              <item>
+               <widget class="QPushButton" name="connectionButton">
+                <property name="text">
+                 <string>Connect</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../openconnect-gui.qrc">
+                  <normaloff>:/images/network-wired.png</normaloff>:/images/network-wired.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="viewLogButton">
+                <property name="text">
+                 <string>View log</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../openconnect-gui.qrc">
+                  <normaloff>:/images/edit-find.png</normaloff>:/images/edit-find.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabWidget_vpnInfo">
+       <attribute name="title">
+        <string>VPN Info</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
+          <property name="formAlignment">
+           <set>Qt::AlignJustify|Qt::AlignTop</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="ipV4LabelText">
+            <property name="text">
+             <string>IPv4:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="ipV4Label">
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="ipV6LabelText">
+            <property name="text">
+             <string>IPv6:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="ipV6Label">
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="dnsLabelText">
+            <property name="text">
+             <string>DNS:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="dnsLabel">
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="cipherCSTPLabelText">
+            <property name="text">
+             <string>Cipher:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="cipherCSTPLabel">
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="cipherDTLSLabelText">
+            <property name="text">
+             <string>DTLS Cipher:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLabel" name="cipherDTLSLabel">
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="downloadLabelText">
+            <property name="text">
+             <string>Download:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="uploadLaberText">
+            <property name="text">
+             <string>Upload:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLabel" name="downloadLabel">
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLabel" name="uploadLabel">
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>436</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menuProfiles">
+     <property name="title">
+      <string>&amp;Profiles</string>
+     </property>
+     <addaction name="actionNewProfile"/>
+     <addaction name="actionNewProfileAdvanced"/>
+     <addaction name="actionEditSelectedProfile"/>
+     <addaction name="actionRemoveSelectedProfile"/>
+    </widget>
+    <addaction name="menuProfiles"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionWebSite"/>
+    <addaction name="actionReport_an_issue"/>
+    <addaction name="actionLicense"/>
+    <addaction name="separator"/>
+    <addaction name="actionCheckForUpdates"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionLogWindow"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <widget class="QMenu" name="menuLog_Level">
+     <property name="title">
+      <string>Log Level</string>
+     </property>
+     <addaction name="actionError"/>
+     <addaction name="actionInfo"/>
+     <addaction name="actionDebug"/>
+     <addaction name="actionTrace"/>
+    </widget>
+    <addaction name="actionMinimizeToTheNotificationArea"/>
+    <addaction name="actionMinimizeTheApplicationInsteadOfClosing"/>
+    <addaction name="separator"/>
+    <addaction name="actionStartMinimized"/>
+    <addaction name="separator"/>
+    <addaction name="actionSingleInstanceMode"/>
+    <addaction name="menuLog_Level"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuSettings"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionCheckForUpdates">
+   <property name="text">
+    <string>Check for &amp;Updates</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the application's About info</string>
+   </property>
+  </action>
+  <action name="actionMinimize">
+   <property name="text">
+    <string>Mi&amp;nimize</string>
+   </property>
+   <property name="toolTip">
+    <string>Minimize</string>
+   </property>
+  </action>
+  <action name="actionRestore">
+   <property name="text">
+    <string>&amp;Restore</string>
+   </property>
+   <property name="toolTip">
+    <string>Restore</string>
+   </property>
+  </action>
+  <action name="actionNewProfile">
+   <property name="icon">
+    <iconset resource="../openconnect-gui.qrc">
+     <normaloff>:/images/text-new.png</normaloff>:/images/text-new.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New profile</string>
+   </property>
+   <property name="toolTip">
+    <string>New quick connect profile</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionEditSelectedProfile">
+   <property name="icon">
+    <iconset resource="../openconnect-gui.qrc">
+     <normaloff>:/images/text-editor.png</normaloff>:/images/text-editor.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Edit selected profile</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionRemoveSelectedProfile">
+   <property name="icon">
+    <iconset resource="../openconnect-gui.qrc">
+     <normaloff>:/images/trashcan.png</normaloff>:/images/trashcan.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Remove selected profile</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionLogWindow">
+   <property name="icon">
+    <iconset resource="../openconnect-gui.qrc">
+     <normaloff>:/images/edit-find.png</normaloff>:/images/edit-find.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Log window</string>
+   </property>
+   <property name="toolTip">
+    <string>View log window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionMinimizeToTheNotificationArea">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Minimize to the notification &amp;area</string>
+   </property>
+  </action>
+  <action name="actionMinimizeTheApplicationInsteadOfClosing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Minimize instead of &amp;closing</string>
+   </property>
+  </action>
+  <action name="actionStartMinimized">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Start &amp;minimized</string>
+   </property>
+  </action>
+  <action name="actionWebSite">
+   <property name="text">
+    <string>&amp;Web site</string>
+   </property>
+   <property name="statusTip">
+    <string>Opens the browser and go to OpenConnect VPN site</string>
+   </property>
+  </action>
+  <action name="actionLicense">
+   <property name="text">
+    <string>&amp;License info</string>
+   </property>
+   <property name="statusTip">
+    <string>Information about license and build</string>
+   </property>
+  </action>
+  <action name="actionSingleInstanceMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Single instance mode</string>
+   </property>
+  </action>
+  <action name="actionNewProfileAdvanced">
+   <property name="icon">
+    <iconset resource="../openconnect-gui.qrc">
+     <normaloff>:/images/text-new.png</normaloff>:/images/text-new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New profile (&amp;advanced)</string>
+   </property>
+   <property name="toolTip">
+    <string>New profile (advanced setup)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="actionReport_an_issue">
+   <property name="text">
+    <string>Report an issue</string>
+   </property>
+  </action>
+  <actiongroup name="LogLevelGroup">
+   <action name="actionError">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Error</string>
+    </property>
+   </action>
+   <action name="actionInfo">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Info</string>
+    </property>
+   </action>
+   <action name="actionDebug">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Debug</string>
+    </property>
+   </action>
+   <action name="actionTrace">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Trace</string>
+    </property>
+   </action>
+  </actiongroup>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="../openconnect-gui.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionMinimize</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showMinimized()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRestore</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showNormal()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLogWindow</sender>
+   <signal>triggered()</signal>
+   <receiver>viewLogButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>366</x>
+     <y>163</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>on_connectClicked()</slot>
+ </slots>
+</ui>
